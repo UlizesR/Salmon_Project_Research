@@ -1,76 +1,114 @@
 import { Vec2 } from './Vectors';
+import data from './Salmanoid.json';
 
-
-export class Salmanoid {
-    position: Vec2;
-    length: number;
-    lengthIn: number;
+interface ModeData {
     a: number;
     b: number;
     c: number;
+}
+
+interface SpeciesData {
+    [key: string]: {
+        [key: string]: ModeData;
+    };
+}
+
+const speciesData: SpeciesData = data;
+
+export class Salmanoid {
+    position: Vec2;
     speed: Vec2;
-    oSpeed: Vec2;
-    swimMode: string = 'prolonged';
-    species: string = 'salmonoid';
-    stamina: number = 100;
+    length: number;
+    a_val: number;
+    b_val: number;
+    c_val: number;
+    stamina: number;
 
-    width: number = 0.5; // ft
-    height: number = 0.5; // ft
-    
-    // h1 elements
-    staminaH1: HTMLHeadingElement;
-    velH1: HTMLHeadingElement;
-    swimTimeH1: HTMLHeadingElement;
-    
-    constructor(pos: Vec2, length: number, a: number, b: number, c: number, speed: Vec2, swimMode: string, species: string = 'salmonoid')
+    swimMode: string;
+    species: string;
+
+    speciesSelect: HTMLSelectElement;
+    swimModeSelect: HTMLSelectElement;
+    lengthInput: HTMLInputElement;
+    speedInput: HTMLInputElement;
+
+    private speciesDict: { [key: number]: string } = {
+        1: 'Steelhead',
+        2: 'Rainbow',
+        3: 'Chinook',
+        4: 'Artic Char'
+    };
+
+    private swimModeDict: { [key: number]: string } = {
+        1: 'Prolonged',
+        2: 'Burst',
+    };
+
+    constructor(pos: Vec2)
     {
-        const INCH_TO_FT = 1/12;
         this.position = pos;
-        this.length = length * INCH_TO_FT;
-        this.lengthIn = length;
-        this.a = a;
-        this.b = b;
-        this.c = c;
-        this.speed = speed;
-        this.oSpeed = speed;
-        this.swimMode = swimMode;
-        this.species = species;
+        this.stamina = 100;
+        
+        this.speciesSelect = document.getElementById('FishSpecies') as HTMLSelectElement;
+        this.swimModeSelect = document.getElementById('FishMode') as HTMLSelectElement;
+        this.lengthInput = document.getElementById('FishLength') as HTMLInputElement;
+        this.speedInput = document.getElementById('FishSpeed') as HTMLInputElement;
 
-        // get the energetics elements of the salmonoid
-        this.staminaH1 = document.getElementById('Stamina') as HTMLHeadingElement;
-        this.velH1 = document.getElementById('Velocity') as HTMLHeadingElement;
-        this.swimTimeH1 = document.getElementById('SwimTime') as HTMLHeadingElement;
 
-        // set fish info 
-        const fishLength = document.getElementById('FishLength') as HTMLHeadingElement;
-        fishLength.innerHTML = `Fish Length: ${this.lengthIn} in`;
-        const fishSpecies = document.getElementById('FishSpecies') as HTMLHeadingElement;
-        fishSpecies.innerHTML = `Fish Species: ${this.species}`;
+        this.length = Number(this.lengthInput.value);
+        this.speed = new Vec2(0, Number(this.speedInput.value));
 
+        this.species = this.speciesDict[Number(this.speciesSelect.value)];
+        
+        this.swimMode = this.swimModeDict[Number(this.swimModeSelect.value)];
+        const speciesModes = speciesData[this.species];
+
+        this.a_val = speciesModes[this.swimMode].a;
+        this.b_val = speciesModes[this.swimMode].b;
+        this.c_val = speciesModes[this.swimMode].c;
     }
 
     drawSalmanoid(ctx: CanvasRenderingContext2D) 
     {
-        // draw a triangle to represent the salmonoid
-
-        // calculate the width and height of the salmonoid
-
         ctx.beginPath();
         ctx.moveTo(this.position.x, this.position.y);
-        ctx.lineTo(this.position.x - this.lengthIn / 3, this.position.y + this.lengthIn);
-        ctx.lineTo(this.position.x + this.lengthIn / 3, this.position.y + this.lengthIn);
+        ctx.lineTo(this.position.x - this.length / 3, this.position.y + this.length);
+        ctx.lineTo(this.position.x + this.length / 3, this.position.y + this.length);
         ctx.closePath();
         ctx.fillStyle = 'red';
         ctx.fill();
     }
 
-    updateEnergeticsInfo(): void
-    {
-        // update the energetics elements
-        this.staminaH1.innerHTML = `Stamina: ${this.stamina} %`;
-        this.velH1.innerHTML = `Velocity: ${this.speed.y} ft/s`;
-        this.swimTimeH1.innerHTML = `Swim Time: ${this.swimTime()} s`;
+    eventListener(eventName: string, callback: Function) {
+        this.speciesSelect.addEventListener(eventName, () => {
+            this.species = this.speciesDict[Number(this.speciesSelect.value)];
+            callback();
+        });
+
+        this.swimModeSelect.addEventListener(eventName, () => {
+            this.swimMode = this.swimModeSelect.value;
+            callback();
+        });
+
+        this.lengthInput.addEventListener(eventName, () => {
+            this.length = Number(this.lengthInput.value);
+            callback();
+        });
+
+        this.speedInput.addEventListener(eventName, () => {
+            this.speed.y = Number(this.speedInput.value);
+            callback();
+        });
     }
+
+
+    // updateEnergeticsInfo(): void
+    // {
+    //     // update the energetics elements
+    //     this.staminaH1.innerHTML = `Stamina: ${this.stamina} %`;
+    //     this.velH1.innerHTML = `Velocity: ${this.speed.y} ft/s`;
+    //     this.swimTimeH1.innerHTML = `Swim Time: ${this.swimTime()} s`;
+    // }
 
     updateSalmanoid(posX: number, posY: number): void
     {
@@ -85,6 +123,6 @@ export class Salmanoid {
 
     swimTime(): number
     {
-        return (((this.length^this.b) * this.a)/this.speed.y)^(1/this.c)
+        return (((this.length^this.b_val) * this.a_val)/this.speed.y)^(1/this.c_val);
     }
 }

@@ -10,75 +10,88 @@
 </head>
 
 <body>
-    <div id="app" class="w-screen h-screen bg-green-800 flex items-center justify-between">
-        <div class="z-10 absolute left-0 w-1/3 h-fit  flex flex-col justify-center items-center p-2 bg-slate-600">
-            <!-- <div class="w-full h-1/2 border-2 border-black">
-                <video id="vid" class="w-full h-full object-cover"></video>
-            </div>
-            <button id="but" autoplay class="m-4 border-2 border-black p-1 hover:bg-slate-400">
-                Open WebCam
-            </button> -->
-            <h1 class="text-2xl">Controls</h1>
-            <div id="controls" class="w-full h-1/2 m-2 border-2 border-black">
-                <div class="flex justify-between items-center p-2">
-                    <label id="riverSpeedLabel" for="riverSpeed">River Speed: 1 ft/s</label>
-                    <input id="riverSpeed" type="range" min="1" max="20" step="0.01" value="1" class="w-1/2">
-                </div>
-                <div class="grid grid-cols-2 gap-4 p-2">
-                    <!-- Show grid or not -->
-                    <div class="flex gap-4 p-2">
-                        <label for="showGrid">Show Grid</label>
-                        <input id="showGrid" type="checkbox">
-                    </div>
-                    <div class="flex gap-4 p-2">
-                        <label for="showVectors">Show Vectors</label>
-                        <input id="showVectors" type="checkbox">
-                    </div>
-                </div>
-            </div>
+    <div id="app" class="w-screen h-screen bg-green-700 grid grid-cols-3">
+        <div class="h-full">
         </div>
-        <div class="z-10 absolute top-0 right-0 w-1/3 h-fit  flex flex-col justify-center items-center p-2 bg-slate-600">
-            <h1 class="text-2xl">Fish Energetics</h1>
-            <div id="controls" class="w-full h-1/2 m-2 p-2 border-2 border-black">
-                <h1 class="text-2xl text-center mb-2">Fish Stats</h1>
-                <h1 id="Stamina" class="text-2xl">Stamina: 0 %</h1>
-                <h1 id="Velocity" class="text-2xl">Velocity: 0 ft/s</h1>
-                <h1 id="SwimTime" class="text-2xl">SwimTime: 0 s</h1>
-            </br>
-                <h1 class="text-2xl text-center mb-2">Fish Info</h1>
-                <h1 id="FishLength" class="text-2xl"></h1>
-                <h1 id="FishSpecies" class="text-2xl"></h1>
+        <!-- Canvas -->
+        <canvas id="canvas" class="w-full h-full"></canvas>
+        <div class="h-full flex flex-col p-2 gap-2">
+            <!-- Fish Energetics -->
+            <div class="w-full h-fit bg-slate-500 rounded-lg border-2 border-black p-2 flex flex-col items-center">
+                <h1 class="text-2xl">Fish Energetics</h1>
+                <br/>
+                <h1 class="text-2xl">Fish Stats</h1>
+                <div class="w-full h-fit p-1 flex justify-between">
+                    <h1 id="Stamina" class="text-xl">Stamina: 0 %</h1>
+                    <h1 id="Velocity" class="text-xl">Velocity: 0 ft/s</h1>
+                    <h1 id="SwimTime" class="text-xl">SwimTime: 0 s</h1>
+                </div>
+                <br/>
+                <h1 class="text-2xl">Fish Controls</h1>
+                <div class="w-full h-fit p-1 grid grid-cols-2">
+                    <div class="flex justify-between items-center p-2">
+                        <label id="FishSpeciesLabel" class="text-lg" for="FishSpecies">Species</label>
+                        <select id="FishSpecies" class="w-2/3 rounded-md p-1">
+                            <option value="1">Steelhead</option>
+                            <option value="2">Rainbow</option>
+                            <option value="3">Chinook</option>
+                            <option value="4">Artic Char</option>
+                        </select>
+                    </div>
+                    <div class="flex justify-between items-center p-2">
+                        <label id="FishModeLabel" class="text-lg" for="FishSpecies">Mode</label>
+                        <select id="FishMode" class="w-2/3 rounded-md p-1">
+                            <option value="1">Prolonged</option>
+                            <option value="2">Burst</option>
+                        </select>
+                    </div>
+                    <div class="flex justify-between items-center p-2">
+                        <label id="FishLengthLabel" class="text-lg" for="FishLength">Length (in)</label>
+                        <input id="FishLength" class="w-2/3 p-1 px-2 rounded-md" type="number" min="1" max="100" value="10" class="w-1/2">
+                    </div>
+                    <div class="flex justify-between items-center p-2">
+                        <label id="FishSpeedLabel" class="text-lg" for="FishLength">Speed (ft/s)</label>
+                        <input id="FishSpeed" class="w-2/3 p-1 px-2 rounded-md" type="number" min="1" max="100" value="1" class="w-1/2">
+                    </div>
+                </div>
             </div>
+            <!-- River Controls -->
+            <div class="w-full h-fit bg-slate-500 rounded-lg border-2 border-black p-2 flex flex-col items-center">
+                <h1 class="text-2xl">River Controls</h1>
+                <br/>
+                <div class="w-full h-fit p-1 grid grid-cols-2">
+                    <div class="flex justify-between items-center p-2">
+                        <label id="RiverSpeedLabel" class="text-lg" for="RiverSpeed">Speed (ft/s)</label>
+                        <input id="RiverSpeed" class="w-2/3 p-1 px-2 rounded-md" type="number" min="1" max="10" value="1" class="w-1/2">
+                    </div>
+                    <div class="flex justify-between items-center p-2">
+                        <label id="RiverDepthLabel" class="text-lg" for="RiverDepth">Depth (ft)</label>
+                        <input id="RiverDepth" class="w-2/3 p-1 px-2 rounded-md" type="number" min="1" max="4" value="1" class="w-1/2">
+                    </div>
+                    <div class="flex justify-between px-5">
+                        <label for="ShowGrid">Show Grid</label>
+                        <input id="ShowGrid" type="checkbox">
+                    </div>
+                    <div class="flex justify-between px-5">
+                        <label for="ShowVectors">Show Vectors</label>
+                        <input id="ShowVectors" type="checkbox">
+                    </div>
+                    <div class="flex justify-between px-5">
+                        <label for="DrawObstacles">Draw obstacles</label>
+                        <input id="DrawObstacles" type="checkbox">
+                    </div>
+                </div>
+                <div class="w-full flex justify-center gap-3 p-2">
+                    <button id="reset" class="w-1/2 border-2 border-black p-1 hover:bg-slate-400">
+                        Reset
+                    </button>
+                    <button id="start" class="w-1/2 border-2 border-black p-1 hover:bg-slate-400">
+                        Start
+                    </button>
+                </div>
         </div>
-        <canvas id="canvas"></canvas>
-    </div>
 </body>
 
 <script defer type="module" src="./src/main.ts"></script>
-<!-- <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        let but = document.getElementById("but");
-        let video = document.getElementById("vid");
-        let mediaDevices = navigator.mediaDevices;
-        video.muted = true;
-        but.addEventListener("click", () => {
-
-            // Accessing the user camera and video.
-            mediaDevices
-                .getUserMedia({
-                    video: true,
-                    audio: true,
-                })
-                .then((stream) => {
-                    // Changing the source of video to current stream.
-                    video.srcObject = stream;
-                    video.addEventListener("loadedmetadata", () => {
-                        video.play();
-                    });
-                })
-                .catch(alert);
-        });
-    });
-</script> -->
 
 </html>
